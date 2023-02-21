@@ -15,7 +15,6 @@ class HomeController {
   async index(req, res) {
     try {
       const users = await User.findAll();
-
       return res.json(users);
     } catch (error) {
       return res.status(400).json(null);
