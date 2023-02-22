@@ -4,7 +4,9 @@ class HomeController {
   async store(req, res) {
     try {
       const novoUser = await User.create(req.body);
-      return res.json({ novoUser });
+      const { id, nome, email } = novoUser;
+
+      return res.json({ id, nome, email });
     } catch (err) {
       return res
         .status(400)
@@ -14,7 +16,7 @@ class HomeController {
 
   async index(req, res) {
     try {
-      const users = await User.findAll();
+      const users = await User.findAll({ attributes: ["id", "nome", "email"] });
       return res.json(users);
     } catch (error) {
       return res.status(400).json(null);
@@ -23,10 +25,11 @@ class HomeController {
 
   async show(req, res) {
     try {
-      const id = req.params.id;
-      const user = await User.findByPk(id);
+      const user = await User.findByPk(req.params.id);
 
-      return res.json(user);
+      const { id, nome, email } = user;
+
+      return res.json({ id, nome, email });
     } catch (error) {
       return res.status(400).json(null);
     }
@@ -34,15 +37,7 @@ class HomeController {
 
   async update(req, res) {
     try {
-      const id = req.params.id;
-
-      if (!id) {
-        return res.status(400).json({
-          errors: ["ID não enviado"]
-        });
-      }
-
-      const user = await User.findByPk(id);
+      const user = await User.findByPk(req.userId);
 
       if (!user) {
         return res.status(400).json({
@@ -51,8 +46,9 @@ class HomeController {
       }
 
       const novosDados = await user.update(req.body);
+      const { id, nome, email } = novosDados;
 
-      return res.json(novosDados);
+      return res.json({ id, nome, email });
     } catch (error) {
       return res
         .status(400)
@@ -62,15 +58,7 @@ class HomeController {
 
   async delete(req, res) {
     try {
-      const id = req.params.id;
-
-      if (!id) {
-        return res.status(400).json({
-          errors: ["ID não enviado"]
-        });
-      }
-
-      const user = await User.findByPk(id);
+      const user = await User.findByPk(req.userId);
 
       if (!user) {
         return res.status(400).json({
