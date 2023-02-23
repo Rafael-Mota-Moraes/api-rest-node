@@ -5,7 +5,7 @@ export default async function (req, res, next) {
   const { authorization } = req.headers;
 
   if (!authorization) {
-    return res.status(401).json({ errors: ["Loguin required"] });
+    return res.status(401).json({ errors: ["Login required"] });
   }
 
   const [texto, token] = authorization.split(" ");
